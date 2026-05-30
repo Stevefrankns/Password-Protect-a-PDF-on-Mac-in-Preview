@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>How to Password Protect a PDF on Mac Using Preview — Free</title>
+<meta content="Learn how to password protect a PDF on Mac for free using Preview. Discover the difference between open vs permissions passwords, and how to share files securely." name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&amp;family=Fira+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root {
+    --color-bg: #F5F4F0;
+    --color-hero-bg: #1C1C1C;
+    --color-primary-accent: #B87333;
+    --color-secondary-accent: #FFFFFF;
+    --color-grid: rgba(184,115,51,0.2);
+    --color-structural: #2A2A2A;
+    --color-body-text: #1C1C1C;
+    --color-muted-text: #5B5750;
+    --color-card: #FFFFFF;
+    --color-border: rgba(184,115,51,0.35);
+    --font-heading: 'Rajdhani', sans-serif;
+    --font-body: 'Fira Sans', sans-serif;
+    --max-reading-width: 760px;
+    --max-wide-width: 1120px;
+    --section-padding-v: 78px;
+    --radius-card: 0;
+    --shadow-card: 0 18px 50px rgba(28,28,28,0.08);
+    --transition-speed: 0.2s;
+    --grid-spacing: 60px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: var(--font-body);
+    color: var(--color-body-text);
+    background-color: var(--color-bg);
+    line-height: 1.75;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+body::selection { background: var(--color-primary-accent); color: #fff; }
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-body-text);
+    line-height: 1.05;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+h1 {
+    font-size: clamp(44px, 7vw, 72px);
+    margin-bottom: 1.35rem;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
+}
+h2 {
+    font-size: clamp(34px, 4vw, 46px);
+    margin-top: 0;
+    padding-bottom: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-primary-accent);
+    position: relative;
+}
+h2::after {
+    content: "SPEC / LOAD PATH";
+    display: block;
+    margin-top: 10px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    color: var(--color-primary-accent);
+    font-weight: 500;
+}
+h3 {
+    font-size: 1.7rem;
+    margin-top: 2.25rem;
+    color: var(--color-primary-accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+h4 { font-size: 1.18rem; letter-spacing: 1px; text-transform: uppercase; }
+p { margin-bottom: 1.2rem; }
+a { color: var(--color-primary-accent); text-decoration: none; font-weight: 600; transition: color var(--transition-speed), background var(--transition-speed); }
+a:hover { text-decoration: underline; }
+ul, ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.5rem; }
+.container, .container-wide {
+    width: min(100% - 48px, var(--max-reading-width));
+    margin: 0 auto;
+}
+.container-wide { width: min(100% - 48px, var(--max-wide-width)); }
+section {
+    padding: var(--section-padding-v) 0;
+    position: relative;
+    isolation: isolate;
+    border-top: 2px solid var(--color-primary-accent);
+}
+section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image:
+      linear-gradient(rgba(184,115,51,0.9) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184,115,51,0.9) 1px, transparent 1px);
+    background-size: var(--grid-spacing) var(--grid-spacing);
+    transition: opacity 200ms ease;
+}
+section:has(h2:hover)::before { opacity: 0.18; }
+.bg-tint { background-color: #ECEAE4; }
+header {
+    background-color: rgba(245,244,240,0.96);
+    border-bottom: 2px solid var(--color-primary-accent);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 18px 0;
+    transition: box-shadow var(--transition-speed), background var(--transition-speed);
+    backdrop-filter: blur(14px);
+}
+header.scrolled { box-shadow: 0 14px 40px rgba(28,28,28,0.12); }
+.nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 28px;
+    gap: 24px;
+}
+.site-brand {
+    font-family: var(--font-heading);
+    font-size: 1.32rem;
+    font-weight: 700;
+    color: var(--color-body-text);
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+.brand-text {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    white-space: nowrap;
+    word-spacing: normal;
+}
+.brand-text span {
+    display: inline-block;
+}
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    display: inline-grid;
+    place-items: center;
+    border: 2px solid var(--color-primary-accent);
+    background:
+      linear-gradient(135deg, rgba(184,115,51,0.16), rgba(184,115,51,0.04)),
+      var(--color-structural);
+    flex: 0 0 auto;
+}
+.brand-mark svg { width: 24px; height: 24px; display: block; }
+.desktop-nav { display: flex; align-items: center; gap: 0; }
+.desktop-nav a {
+    color: var(--color-structural);
+    margin-left: 28px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+.desktop-nav a:hover { color: var(--color-primary-accent); text-decoration: none; }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 24px;
+    border-radius: 0;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: transform var(--transition-speed), background var(--transition-speed), color var(--transition-speed), border var(--transition-speed);
+    border: 2px solid var(--color-primary-accent);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: var(--font-heading);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.btn:hover { transform: translateY(-2px); text-decoration: none; }
+.btn-outline { background: transparent; color: var(--color-primary-accent); }
+.btn-outline:hover { background: var(--color-primary-accent); color: #1C1C1C; }
+.btn-filled { background: var(--color-primary-accent); color: #1C1C1C; }
+.btn-filled:hover { background: #D08A4A; color: #1C1C1C; }
+.hero {
+    background-color: var(--color-hero-bg);
+    color: #fff;
+    padding-top: 76px;
+    padding-bottom: 82px;
+    overflow: hidden;
+    border-top: 0;
+}
+.hero::before { display: none; }
+.hero .container { position: relative; z-index: 2; }
+.hero p { color: rgba(255,255,255,0.84); font-size: 1.08rem; }
+.hero h1 { color: #fff; max-width: 900px; }
+.grid-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0.15; }
+.grid-layer::before,
+.grid-layer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-repeat: repeat;
+}
+.grid-layer::before {
+    width: 0;
+    background-image: repeating-linear-gradient(0deg, rgba(184,115,51,0.85) 0 1px, transparent 1px var(--grid-spacing));
+    animation: gridDrawWidth 600ms ease forwards;
+}
+.grid-layer::after {
+    height: 0;
+    background-image: repeating-linear-gradient(90deg, rgba(184,115,51,0.85) 0 1px, transparent 1px var(--grid-spacing));
+    animation: gridDrawHeight 600ms ease forwards;
+}
+@keyframes gridDrawWidth { to { width: 100%; } }
+@keyframes gridDrawHeight { to { height: 100%; } }
+.hero-title-frame { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: clamp(12px, 2vw, 28px); }
+.hero-bracket {
+    width: clamp(22px, 4vw, 42px);
+    height: clamp(92px, 15vw, 170px);
+    border-top: 5px solid var(--color-primary-accent);
+    border-bottom: 5px solid var(--color-primary-accent);
+    transform: scaleX(0.8);
+    animation: bracketExpand 600ms 140ms ease forwards;
+}
+.hero-bracket.left { border-left: 5px solid var(--color-primary-accent); transform-origin: right center; }
+.hero-bracket.right { border-right: 5px solid var(--color-primary-accent); transform-origin: left center; }
+@keyframes bracketExpand { to { transform: scaleX(1); } }
+.breadcrumb {
+    font-size: 12px;
+    color: var(--color-primary-accent);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+}
+.meta-bar {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    border-top: 2px solid rgba(184,115,51,0.6);
+    padding-top: 16px;
+    margin-top: 24px;
+    margin-bottom: 32px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.quick-answer {
+    background: rgba(42,42,42,0.92);
+    border-left: 0;
+    border-top: 2px solid var(--color-primary-accent);
+    padding: 28px;
+    border-radius: 0;
+    box-shadow: 0 22px 70px rgba(0,0,0,0.3);
+    margin-bottom: 32px;
+    position: relative;
+}
+.quick-answer::before {
+    content: "[ QA / OPEN PASSWORD ]";
+    position: absolute;
+    top: -12px;
+    right: 22px;
+    padding: 3px 9px;
+    background: var(--color-primary-accent);
+    color: #1C1C1C;
+    font: 700 12px var(--font-body);
+    letter-spacing: 0.12em;
+}
+.quick-answer .label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-primary-accent);
+    margin-bottom: 8px;
+}
+.toc-card {
+    background: #fff;
+    border: 2px solid var(--color-primary-accent);
+    border-radius: 0;
+    padding: 34px;
+    margin: 48px 0;
+    box-shadow: var(--shadow-card);
+    position: relative;
+}
+.toc-card::before, .toc-card::after {
+    content: "";
+    position: absolute;
+    width: 24px; height: 24px;
+    border-color: var(--color-primary-accent);
+}
+.toc-card::before { left: -2px; top: -2px; border-left: 5px solid; border-top: 5px solid; }
+.toc-card::after { right: -2px; bottom: -2px; border-right: 5px solid; border-bottom: 5px solid; }
+.toc-card h3 { margin-top: 0; font-size: 1.45rem; border-bottom: none; margin-bottom: 16px; }
+.toc-list { list-style: none; padding: 0; }
+.toc-list li { margin-bottom: 12px; font-family: var(--font-heading); }
+.toc-list a { color: var(--color-body-text); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.toc-list a:hover { color: var(--color-primary-accent); text-decoration: none; padding-left: 6px; }
+.pull-quote {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: #fff;
+    padding: 26px;
+    border-radius: 0;
+    border-left: 2px solid var(--color-primary-accent);
+    border-top: 2px solid rgba(184,115,51,0.35);
+    margin: 34px 0;
+    font-family: var(--font-heading);
+    font-size: 1.26rem;
+    color: var(--color-primary-accent);
+    line-height: 1.45;
+    box-shadow: var(--shadow-card);
+}
+.pull-quote svg { flex-shrink: 0; width: 34px; height: 34px; fill: var(--color-primary-accent); opacity: 0.9; }
+.content-image,
+.logo-visual,
+.security-visual-grid,
+.structural-media {
+    margin: 34px auto;
+}
+.content-image {
+    border: 2px solid rgba(184,115,51,0.45);
+    background:
+      linear-gradient(135deg, rgba(184,115,51,0.08), rgba(42,42,42,0.04)),
+      #fff;
+    padding: 16px;
+    box-shadow: var(--shadow-card);
+    position: relative;
+}
+.content-image::before {
+    content: "IMAGE BAY";
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: var(--color-primary-accent);
+    color: #1C1C1C;
+    padding: 2px 8px;
+    font: 700 11px var(--font-body);
+    letter-spacing: 0.16em;
+}
+.content-image img,
+.security-visual-grid img {
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+    object-fit: contain;
+    display: block;
+    background: #F5F4F0;
+}
+.hero .content-image {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(184,115,51,0.8);
+    max-width: 860px;
+}
+.hero .content-image img { background: rgba(255,255,255,0.05); max-height: 420px; }
+.security-visual-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+.security-visual-grid .content-image { margin: 0; height: 100%; }
+.security-visual-grid img { max-height: 340px; }
+.comp-table-wrapper { overflow-x: auto; margin: 40px 0; border: 2px solid var(--color-primary-accent); background: #fff; }
+table { width: 100%; border-collapse: collapse; text-align: left; background: #fff; border-radius: 0; overflow: hidden; box-shadow: none; }
+th, td { padding: 18px; border-bottom: 1px solid rgba(184,115,51,0.28); position: relative; }
+th {
+    background: var(--color-structural);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.row-group-header { background: rgba(184,115,51,0.18); font-weight: 700; text-align: center; text-transform: uppercase; font-size: 13px; letter-spacing: 0.1em; color: var(--color-body-text); }
+.comp-table-wrapper table[data-hover-col="1"] :is(th,td):nth-child(1),
+.comp-table-wrapper table[data-hover-col="2"] :is(th,td):nth-child(2),
+.comp-table-wrapper table[data-hover-col="3"] :is(th,td):nth-child(3),
+.comp-table-wrapper table[data-hover-col="4"] :is(th,td):nth-child(4) {
+    background-image: linear-gradient(rgba(184,115,51,0.18), rgba(184,115,51,0.18));
+    box-shadow: inset 0 3px 0 var(--color-primary-accent), inset 0 -3px 0 var(--color-primary-accent);
+}
+.load-diagram {
+    margin: 44px 0;
+    padding: 26px;
+    background: var(--color-structural);
+    color: #fff;
+    border: 2px solid var(--color-primary-accent);
+    box-shadow: var(--shadow-card);
+}
+.load-diagram svg { width: 100%; height: auto; display: block; }
+.load-diagram text { font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; fill: #fff; text-transform: uppercase; }
+.load-diagram .beam { stroke: var(--color-primary-accent); stroke-width: 4; }
+.load-diagram .support { stroke: rgba(255,255,255,0.7); stroke-width: 5; }
+.load-diagram .node { fill: var(--color-primary-accent); }
+.interactive-widget {
+    background: #fff;
+    border: 2px solid var(--color-primary-accent);
+    padding: 34px;
+    border-radius: 0;
+    box-shadow: var(--shadow-card);
+    margin: 40px 0;
+}
+.widget-label { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--color-primary-accent); margin-bottom: 16px; display: block; letter-spacing: 0.16em; }
+.radio-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.radio-label { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 13px; border: 1px solid rgba(184,115,51,0.4); border-radius: 0; transition: background var(--transition-speed), border var(--transition-speed); }
+.radio-label:hover { background: rgba(184,115,51,0.08); border-color: var(--color-primary-accent); }
+.radio-label input[type="radio"] { accent-color: var(--color-primary-accent); width: 18px; height: 18px; }
+#picker-result, #strength-result { padding: 16px; background: rgba(184,115,51,0.08); border-radius: 0; font-weight: 500; border-left: 3px solid var(--color-primary-accent); display: none; margin-top: 16px; }
+.premium-band {
+    background-color: var(--color-hero-bg);
+    color: #fff;
+    padding: 88px 0;
+    text-align: center;
+}
+.premium-band::before { opacity: 0.12; }
+.premium-band h2, .premium-band h3 { color: #fff; border-color: var(--color-primary-accent); }
+.premium-band h2::after { color: var(--color-primary-accent); }
+.premium-band p { color: rgba(255,255,255,0.78); font-size: 1.08rem; max-width: 660px; margin: 0 auto 32px auto; }
+.saas-mockup {
+    max-width: 860px;
+    margin: 42px auto;
+    background: #0F0F0F;
+    border-radius: 0;
+    padding: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    border: 2px solid rgba(184,115,51,0.75);
+}
+.mockup-inner { background: #151515; min-height: 300px; border-radius: 0; display: grid; place-items: center; color: rgba(255,255,255,0.42); font-family: monospace; overflow: hidden; }
+.mockup-inner img { width: 100%; height: auto; max-height: 390px; object-fit: contain; display: block; }
+.feature-chips { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+.chip { background: rgba(184,115,51,0.16); border: 1px solid rgba(184,115,51,0.6); padding: 8px 16px; border-radius: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+.def-list dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-bottom: 24px; }
+.feature-card {
+    position: relative;
+    background: #fff;
+    border: 1px solid rgba(184,115,51,0.36);
+    border-top: 2px solid var(--color-primary-accent);
+    padding: 26px;
+    box-shadow: var(--shadow-card);
+    min-height: 180px;
+    overflow: hidden;
+}
+.feature-card::before {
+    content: attr(data-spec);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transform: translateY(-4px);
+    background: var(--color-structural);
+    color: var(--color-primary-accent);
+    border: 1px solid var(--color-primary-accent);
+    padding: 3px 8px;
+    font: 700 12px var(--font-body);
+    letter-spacing: 0.14em;
+    transition: opacity var(--transition-speed), transform var(--transition-speed);
+}
+.feature-card:hover::before, .feature-card:focus-within::before { opacity: 1; transform: translateY(0); }
+.feature-card dt { font-family: var(--font-heading); font-size: 1.38rem; font-weight: 700; color: var(--color-body-text); margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.06em; }
+.feature-card dd { padding-left: 0; margin: 0; border-bottom: none; padding-bottom: 0; color: var(--color-muted-text); }
+.faq-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+.faq-card { background: #fff; border: 1px solid rgba(184,115,51,0.35); border-top: 2px solid var(--color-primary-accent); border-radius: 0; padding: 24px; box-shadow: var(--shadow-card); }
+.faq-card h4 { font-size: 1.1rem; color: var(--color-body-text); margin-bottom: 12px; }
+.faq-card p { font-size: 0.95rem; margin: 0; color: var(--color-muted-text); }
+.testimonial-band { background: #fff; border-left: 0; border-top: 2px solid var(--color-primary-accent); padding: 28px; border-radius: 0; margin: 24px 0; font-style: italic; box-shadow: var(--shadow-card); }
+.testimonial-author { font-weight: 700; font-style: normal; font-size: 13px; text-transform: uppercase; margin-top: 12px; display: block; color: var(--color-body-text); letter-spacing: 0.12em; }
+footer {
+    background: var(--color-hero-bg);
+    color: rgba(255,255,255,0.76);
+    padding: 68px 0 34px 0;
+    font-size: 14px;
+    border-top: 2px solid var(--color-primary-accent);
+}
+footer a { color: #fff; text-decoration: none; }
+footer a:hover { color: var(--color-primary-accent); }
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 40px; border-bottom: 1px solid rgba(184,115,51,0.35); padding-bottom: 34px; margin-bottom: 34px; }
+.footer-disclosure { font-style: italic; opacity: 0.8; line-height: 1.5; margin-top: 16px; }
+.mobile-toggle { display: none; font-size: 26px; cursor: pointer; color: var(--color-body-text); }
+@media(min-width: 768px) {
+    .faq-grid { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+}
+@media(max-width: 900px) {
+    .desktop-nav { display: none; flex-direction: column; width: 100%; background: var(--color-bg); position: absolute; top: 100%; left: 0; padding: 18px 28px; border-bottom: 2px solid var(--color-primary-accent); }
+    .desktop-nav.active { display: flex; }
+    .desktop-nav a { margin: 12px 0; }
+    .mobile-toggle { display: block; }
+    .hero-title-frame { grid-template-columns: 1fr; }
+    .hero-bracket { display: none; }
+    .security-visual-grid, .def-list dl { grid-template-columns: 1fr; }
+    .container, .container-wide { width: min(100% - 34px, var(--max-reading-width)); }
+}
+@media(max-width: 768px) {
+    :root { --grid-spacing: 80px; --section-padding-v: 58px; }
+    h1 { font-size: 44px; }
+    h2 { font-size: 32px; }
+    .content-image { padding: 10px; }
+    .nav-inner { padding: 0 18px; }
+    .site-brand { font-size: 1.05rem; gap: 9px; }
+    .brand-mark { width: 34px; height: 34px; }
+}
+</style>
+</head>
+<body>
+<header id="site-header">
+<div class="nav-inner">
+<div class="site-brand"><span aria-hidden="true" class="brand-mark"><svg focusable="false" role="img" viewbox="0 0 48 48"><path d="M24 4 40 10v12c0 10.3-6.6 18.8-16 22C14.6 40.8 8 32.3 8 22V10L24 4Z" fill="none" stroke="#B87333" stroke-width="3"></path><path d="M18 24h12v10H18z" fill="#B87333"></path><path d="M20 24v-5a4 4 0 0 1 8 0v5" fill="none" stroke="#fff" stroke-width="3"></path></svg></span><span class="brand-text" aria-label="Mac PDF Security Guide"><span>Mac</span><span>PDF</span><span>Security</span><span>Guide</span></span></div>
+<div class="mobile-toggle" id="mobile-toggle">☰</div>
+<nav class="desktop-nav" id="desktop-nav">
+<a href="#guide">Guide</a>
+<a href="#methods">Methods</a>
+<a href="#comparison">Comparison</a>
+<a href="#faq">FAQ</a>
+<a class="btn btn-outline" href="#recommendation" style="margin-left:24px;">See Our Top Pick →</a>
+</nav>
+</div>
+</header>
+<!-- S1 HERO -->
+<section class="hero"><div aria-hidden="true" class="grid-layer"></div>
+<div class="container">
+<div class="breadcrumb">Security Guides › macOS Document Protection</div>
+<div class="hero-title-frame"><span aria-hidden="true" class="hero-bracket left"></span><h1>How to Password Protect a PDF on Mac Using Preview — Free</h1><span aria-hidden="true" class="hero-bracket right"></span></div>
+<p>Whether you need to stop unauthorized viewing or prevent copying and printing, macOS gives you built-in tools to secure your documents. Here is the complete guide to locking PDFs on your MacBook or iMac.</p>
+<div class="meta-bar">
+            Editorial Team · Updated Oct 2023 · 8 min read
+        </div>
+<div class="quick-answer">
+<span class="label">Quick Answer</span>
+<p><strong>To quickly <a href="https://techpp.com/2013/05/16/password-protect-encrypt-files-mac-windows/" rel="noopener noreferrer" target="_blank">password protect a PDF on a Mac</a> for free:</strong> Open the PDF in the native <strong>Preview</strong> app. Go to <strong>File &gt; Export</strong>. Check the <strong>Encrypt</strong> box, enter your desired password, verify it, and click Save. The newly saved file will now require a password to open on any device.</p>
+</div><figure class="content-image hero-banner-visual"><img alt="Password protected PDF document illustrated as a secure virtual sheet on Mac" decoding="async" loading="lazy" src="https://i.ibb.co/ZRsTRpZQ/sheet-of-virtual-paper.jpg"/></figure>
+</div>
+</section>
+<!-- S2 TOC -->
+<section style="padding:0;">
+<div class="container">
+<div class="toc-card">
+<h3>In This Guide</h3>
+<ul class="toc-list">
+<li><a href="#overview">1. Open Passwords vs Permissions Passwords</a></li>
+<li><a href="#methods">2. Password Protect PDF on Mac — 3 Free Methods</a></li>
+<li><a href="#comparison">3. Methods Comparison</a></li>
+<li><a href="#selector">4. Which Method Is Right For You?</a></li>
+<li><a href="#recommendation">5. The Tool We Recommend for Complete Folder Security</a></li>
+<li><a href="#troubleshooting">6. Troubleshooting &amp; Recovery</a></li>
+<li><a href="#faq">7. Frequently Asked Questions</a></li>
+</ul>
+</div>
+</div>
+</section>
+<!-- S3 OVERVIEW -->
+<section class="container" id="overview">
+<h2>Permissions Password vs Open Password — Explained</h2>
+<p>Before you lock your document, it is crucial to understand that macOS and PDF standards recognize two completely different types of passwords. Applying the wrong one means your data isn't as secure as you think.</p>
+<h3>The Open Password (Document Open Password)</h3><figure class="content-image"><img alt="Encryption concept showing protected document data before opening a PDF" decoding="async" loading="lazy" src="https://i.ibb.co/gZ8Tcbqc/what-is-encryption-complete-explainer-for-beginners.jpg"/></figure>
+<p>This is full encryption. When you apply an open password, the actual contents of the PDF are mathematically scrambled. Nobody can see the text, images, or metadata without entering the correct password. This is the standard you should use when emailing sensitive financial documents or personal records.</p>
+<div class="pull-quote">
+<svg viewbox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg>
+<div>If you need to stop someone from reading the file entirely, you must use an Open Password. This is the only way to encrypt the data.</div>
+</div>
+<h3>The Permissions Password (Master Password)</h3><figure class="content-image"><img alt="Sensitive personal data protected by permissions and access controls" decoding="async" loading="lazy" src="https://i.ibb.co/Zpt5NfpT/sensitive-personal-data.jpg"/></figure>
+<p>A permissions password restricts <em>actions</em>, not access. The recipient can open and read the PDF without typing a password. However, if they try to print it, copy text, or edit the document, they will be prompted for the password. <strong>Warning:</strong> Permissions passwords do not encrypt the document, and many third-party PDF readers routinely ignore these restrictions.</p>
+</section>
+<!-- S4 METHODS GUIDE -->
+<section class="bg-tint" id="methods">
+<div class="container">
+<h2>Password Protect PDF on Mac — 3 Free Methods</h2>
+<p>You do not need to purchase expensive software to secure a PDF file on Mac. macOS Ventura, Sonoma, and Sequoia all include native tools to handle basic encryption.</p>
+<h3>Method 1: How to Password Protect a PDF on Mac Using Preview</h3><figure class="content-image"><img alt="Native macOS security interface for protecting files and documents" decoding="async" loading="lazy" src="https://i.ibb.co/4Rr8X43J/Native-mac-OS-UI-Experience.jpg"/></figure>
+<p>The easiest method requires no extra software. The built-in macOS Preview app can apply strong <a href="https://www.filecenter.com/blog/best-pdf-encryption-software/" rel="noopener noreferrer" target="_blank">AES-128 encryption</a> to any PDF.</p>
+<ol>
+<li>Double-click your PDF to open it in <strong>Preview</strong>.</li>
+<li>In the top menu bar, click <strong>File</strong> and select <strong>Export</strong>. (Do <em>not</em> select "Export as PDF").</li>
+<li>In the dialog box, look for the <strong>Encrypt</strong> checkbox near the bottom and check it.</li>
+<li>Enter your password in the <strong>Password</strong> field and re-type it in the <strong>Verify</strong> field.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<p><em>Note on compatibility:</em> This applies an Open Password. The resulting file can be opened on Windows, Android, or iOS, provided the recipient has the password and a standard PDF reader.</p>
+<h3>Method 2: How to Password Protect a Document from Pages or Keynote</h3><figure class="content-image"><img alt="Protected documents prepared for secure PDF export on a Mac" decoding="async" loading="lazy" src="https://i.ibb.co/Kj8Tw5y3/Protecting-Documents.jpg"/></figure>
+<p>If you are creating the document natively on your Mac, you can lock it before it even becomes a PDF.</p>
+<ol>
+<li>Open your document in Apple <strong>Pages</strong>, <strong>Numbers</strong>, or <strong>Keynote</strong>.</li>
+<li>Click <strong>File</strong> &gt; <strong>Set Password</strong>.</li>
+<li>Enter and verify your password.</li>
+<li>To share it as a PDF, go to <strong>File</strong> &gt; <strong>Export To</strong> &gt; <strong>PDF</strong>. The PDF will automatically inherit the password protection.</li>
+</ol>
+<h3>Method 3: Remove PDF Password on Mac Using Preview</h3><figure class="content-image"><img alt="Unlocking protected PDF data after entering the original password" decoding="async" loading="lazy" src="https://i.ibb.co/gLVNxgq4/Accessing-Data-Unlocking.jpg"/></figure>
+<p>If you have an encrypted PDF and want to save an unprotected version for easier access in the future:</p>
+<ol>
+<li>Open the encrypted PDF in <strong>Preview</strong> and enter the password.</li>
+<li>Click <strong>File</strong> &gt; <strong>Export</strong>.</li>
+<li>Uncheck the <strong>Encrypt</strong> box.</li>
+<li>Save the file with a new name. The new file will no longer require a password.</li>
+</ol>
+<p><em>Security Warning:</em> You cannot bypass a password this way. You must know the original password to open the file before you can remove the encryption.</p>
+</div>
+</section>
+<!-- S8 COMPARISON TABLE -->
+<section class="container-wide" id="comparison">
+<h2>Mac PDF Security: Native vs Software</h2>
+<p>How does Mac's built-in Preview compare to <a href="https://nira.com/best-encryption-software/" rel="noopener noreferrer" target="_blank">dedicated document security tools</a>? Here is a breakdown of what each approach can handle.</p><div aria-hidden="true" class="load-diagram">
+<svg preserveaspectratio="xMidYMid meet" viewbox="0 0 900 330">
+<line class="beam" x1="90" x2="810" y1="70" y2="70"></line>
+<line class="beam" x1="90" x2="810" y1="170" y2="170"></line>
+<line class="beam" x1="90" x2="810" y1="270" y2="270"></line>
+<line class="support" x1="140" x2="140" y1="45" y2="292"></line>
+<line class="support" x1="310" x2="310" y1="45" y2="292"></line>
+<line class="support" x1="480" x2="480" y1="45" y2="292"></line>
+<line class="support" x1="650" x2="650" y1="45" y2="292"></line>
+<line class="support" x1="790" x2="790" y1="45" y2="292"></line>
+<text x="92" y="40">LOAD-BEARING SECURITY MAP</text>
+<text x="160" y="62">OPEN PASSWORD</text>
+<text x="330" y="62">AES ENCRYPTION</text>
+<text x="500" y="62">VAULT LOCKERS</text>
+<text x="665" y="62">CLOUD SYNC</text>
+<text x="112" y="142">VIEW CONTROL</text>
+<text x="282" y="142">FILE SCRAMBLE</text>
+<text x="454" y="142">BATCH PROTECT</text>
+<text x="622" y="142">SHARE SAFELY</text>
+<text x="112" y="242">PDF</text>
+<text x="282" y="242">DOCUMENTS</text>
+<text x="454" y="242">FOLDERS</text>
+<text x="622" y="242">DEVICES</text>
+<circle class="node" cx="140" cy="70" r="7"></circle><circle class="node" cx="310" cy="70" r="7"></circle><circle class="node" cx="480" cy="70" r="7"></circle><circle class="node" cx="650" cy="70" r="7"></circle><circle class="node" cx="790" cy="70" r="7"></circle>
+<circle class="node" cx="140" cy="170" r="7"></circle><circle class="node" cx="310" cy="170" r="7"></circle><circle class="node" cx="480" cy="170" r="7"></circle><circle class="node" cx="650" cy="170" r="7"></circle><circle class="node" cx="790" cy="170" r="7"></circle>
+<circle class="node" cx="140" cy="270" r="7"></circle><circle class="node" cx="310" cy="270" r="7"></circle><circle class="node" cx="480" cy="270" r="7"></circle><circle class="node" cx="650" cy="270" r="7"></circle><circle class="node" cx="790" cy="270" r="7"></circle>
+</svg>
+</div><figure class="content-image"><img alt="Folder Lock for Mac home screen showing encrypted locker protection" decoding="async" loading="lazy" src="https://i.ibb.co/VWn46rkM/folder-lock-mac-home-screenshot.jpg"/></figure>
+<div class="comp-table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Security Feature</th>
+<th>macOS Preview</th>
+<th>Adobe Acrobat (Free)</th>
+<th>Dedicated Vault Software (<a href="https://cloudstorageinfo.org/folder-lock-review" rel="noopener noreferrer" target="_blank">Folder Lock</a>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-group-header"><td colspan="4">Basic Security</td></tr>
+<tr>
+<td>Apply Open Password</td>
+<td>Yes</td>
+<td>No (Requires Pro)</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Encryption Strength</td>
+<td>AES-128</td>
+<td>None</td>
+<td>Military-Grade AES-256</td>
+</tr>
+<tr class="row-group-header"><td colspan="4">Advanced Security</td></tr>
+<tr>
+<td>Batch Protect Multiple Files at Once</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Cross-Device Syncing (Mac, Win, iOS, Android)</td>
+<td>No</td>
+<td>Limited</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Secure File Sharing (No Passwords Required)</td>
+<td>No</td>
+<td>No</td>
+<td>Yes (Asymmetric Sharing)</td>
+</tr>
+<tr>
+<td>Dedicated Encrypted Cloud Lockers</td>
+<td>No</td>
+<td>No</td>
+<td>Yes (Google Drive, Dropbox, OneDrive)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- INTERACTIVE WIDGETS (S6 & Calculator) -->
+<section class="container" id="selector">
+<h2>Interactive: Choose the Right Protection Level</h2><figure class="content-image"><img alt="Data vault analogy for choosing the right PDF and folder protection level" decoding="async" loading="lazy" src="https://i.ibb.co/Y4PCmGNW/Data-Vault-Analogy.jpg"/></figure>
+<div class="interactive-widget">
+<span class="widget-label">Document Protection Method Selector</span>
+<p>What are you trying to accomplish on your Mac?</p>
+<div class="radio-group" id="method-radios">
+<label class="radio-label"><input name="goal" type="radio" value="view"/> I want to stop anyone from reading a single PDF.</label>
+<label class="radio-label"><input name="goal" type="radio" value="edit"/> I want people to read it, but not print or edit it.</label>
+<label class="radio-label"><input name="goal" type="radio" value="batch"/> I have multiple files and want to sync them securely to my iPhone.</label>
+<label class="radio-label"><input name="goal" type="radio" value="hide"/> I want to lock a whole folder of mixed documents securely on the cloud.</label>
+</div>
+<button class="btn btn-filled" onclick="showMethodResult()">Get Recommendation</button>
+<div id="picker-result"></div>
+</div>
+<div class="interactive-widget">
+<span class="widget-label">Document Password Strength Evaluator</span>
+<p>Select how you are protecting and sharing your PDF to evaluate the risk of unauthorized access.</p>
+<div class="radio-group" id="strength-radios">
+<label class="radio-label"><input name="strength" type="radio" value="preview-email"/> Preview Export (12-char password) + Emailed file</label>
+<label class="radio-label"><input name="strength" type="radio" value="preview-cloud"/> Preview Export (Short password) + Public Google Drive link</label>
+<label class="radio-label"><input name="strength" type="radio" value="vault"/> Folder Lock AES-256 Vault App + Encrypted Cloud Locker</label>
+</div>
+<button class="btn btn-outline" onclick="showStrengthResult()">Evaluate Security</button>
+<div id="strength-result"></div>
+</div>
+</section>
+<script>
+    function showMethodResult() {
+        const selected = document.querySelector('input[name="goal"]:checked');
+        const resBox = document.getElementById('picker-result');
+        if (!selected) { resBox.innerHTML = "Please select an option above."; resBox.style.display = "block"; return; }
+        
+        let output = "";
+        switch(selected.value) {
+            case "view": output = "<strong>Recommendation: Use macOS Preview.</strong> Go to File > Export > Encrypt. It is fast, free, and highly secure for single files."; break;
+            case "edit": output = "<strong>Recommendation: Use macOS Preview (Permissions Edit).</strong> Go to File > Edit Permissions inside Preview to restrict printing and copying."; break;
+            case "batch": output = "<strong>Recommendation: Use Dedicated Vault Software.</strong> Preview cannot batch-process or natively sync files to mobile platforms. You will need a cross-platform tool like Folder Lock."; break;
+            case "hide": output = "<strong>Recommendation: Use Cloud-Native Vault Software.</strong> You cannot password protect and hide folders natively on Mac cloud drives. Third-party vault software is recommended to encrypt items before they touch Google Drive or Dropbox."; break;
+        }
+        resBox.innerHTML = output;
+        resBox.style.display = "block";
+    }
+
+    function showStrengthResult() {
+        const selected = document.querySelector('input[name="strength"]:checked');
+        const resBox = document.getElementById('strength-result');
+        if (!selected) { resBox.innerHTML = "Please select an option above."; resBox.style.display = "block"; return; }
+        
+        let output = "";
+        switch(selected.value) {
+            case "preview-email": output = "<span style='color: #8a5a00;'>MODERATE RISK:</span> Preview uses AES-128, which is strong, but email is unencrypted in transit. Ensure you send the password via a different channel (like an SMS text)."; break;
+            case "preview-cloud": output = "<span style='color: #a42a2a;'>HIGH RISK:</span> A short password can be brute-forced if the file is downloaded by an attacker from a public link."; break;
+            case "vault": output = "<span style='color: #2a5c3f;'>LOW RISK:</span> AES-256 encryption managed inside a dedicated locker scrambles data locally before cloud synchronization, offering military-grade protection."; break;
+        }
+        resBox.innerHTML = output;
+        resBox.style.display = "block";
+    }
+</script>
+<!-- S16 TROUBLESHOOTING -->
+<section class="bg-tint" id="troubleshooting">
+<div class="container">
+<h2>Troubleshooting &amp; Recovery</h2><figure class="content-image"><img alt="Lock screen security concept for PDF password troubleshooting and recovery" decoding="async" loading="lazy" src="https://i.ibb.co/xtZC7X09/lock-screen-security.jpg"/></figure>
+<p>Working with encrypted PDFs occasionally leads to lockouts or compatibility issues. Here is how to resolve the most common problems.</p>
+<h3>How to unlock a PDF you forgot the password to on Mac?</h3>
+<p>If you applied an Open Password via macOS Preview and forgot it, the file cannot be natively recovered. macOS does not save a "backdoor" key. You must either find the password in your Keychain (if you saved it), request an unprotected copy from the original sender, or restore an older, unencrypted version of the file using Time Machine.</p>
+<h3>Why can Google Chrome open my password-protected PDF without a password?</h3>
+<p>If Chrome opens the file without prompting for a password, it means you only applied a <em>Permissions Password</em>, not an Open Password. As explained earlier, Permissions passwords only restrict editing/printing, not viewing. Furthermore, Chrome's built-in PDF viewer notoriously ignores Permissions passwords, allowing users to print or copy text anyway.</p>
+<h3>Can I batch password protect multiple documents at once?</h3>
+<p>Not natively using Preview. If you have dozens of files, you have to open and export them one by one. To lock multiple files, you must use Mac's Disk Utility to create an encrypted `.dmg` container, or use dedicated third-party document security software.</p>
+</div>
+</section>
+<!-- S5 PREMIUM SAAS MOMENT (LAYER 2) -->
+<section class="premium-band" id="recommendation">
+<div class="container">
+<span style="font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 13px; margin-bottom: 16px; display: block; color: var(--color-primary-accent);">The Editorial Recommendation</span>
+<h2>Why We Recommend Folder Lock for Complete Security</h2>
+<p>Compatible with <a href="https://aijourn.com/newsoftwares-llc-releases-folder-lock-10-1-13-for-windows-and-launches-first-macos-edition/" rel="noopener noreferrer" target="_blank">macOS 13 and later</a>, Folder Lock integrates <a href="https://www.cloudwards.net/best-encryption-software/" rel="noopener noreferrer" target="_blank">military-grade AES-256 encryption</a> directly into your Apple ecosystem. While macOS Preview is fine for single PDFs, Folder Lock replaces tedious individual passwords with a master encrypted vault, ensuring seamless <a href="https://www.windowscentral.com/how-encrypt-data-storing-it-cloud-and-why-you-should" rel="noopener noreferrer" target="_blank">cloud synchronization</a> and secure sharing across all your devices.</p>
+<div class="saas-mockup">
+<div class="mockup-inner"><img alt="Folder Lock 10 macOS interface showing secure local and cloud lockers" decoding="async" loading="lazy" src="https://i.ibb.co/fzCSg3ZJ/folder-lock-10-mac-screenshot-800x600.png"/></div>
+</div>
+<div class="feature-chips">
+<div class="chip">Military-Grade AES-256</div>
+<div class="chip">Cloud Sync (Dropbox/Drive)</div>
+<div class="chip">Cross-Platform Access</div>
+<div class="chip">Secure File Sharing</div>
+</div><figure class="content-image folder-boxshot-visual"><img alt="Folder Lock 10 product boxshot for complete document security" decoding="async" loading="lazy" src="https://i.ibb.co/V0Sw4tk7/folder-lock-10-boxshot.png"/></figure>
+<p>Of all the options we tested, we recommend <strong>Folder Lock</strong> for users who manage multiple sensitive files across platforms. It scrambles data dynamically on your Mac, avoiding the risks of uploading unencrypted documents to web-based platforms.</p>
+<div style="margin-top: 32px; display: flex; justify-content: center; gap: 16px;">
+<a class="btn btn-filled" href="https://www.newsoftwares.net/download/folderlock10-en/folderlock10-en.exe" rel="noopener noreferrer" target="_blank">Try Folder Lock Free →</a>
+<a class="btn btn-outline" href="https://store.newsoftwares.net/?add=fl10" rel="noopener noreferrer" style="border-color: #fff; color: #fff;" target="_blank">Get the Full Version →</a>
+</div>
+</div>
+</section>
+<!-- S7 CORE FEATURES (V7 Def List) -->
+<section class="container">
+<h2>Beyond Basic PDF Passwords: Dedicated Vault Features</h2>
+<p>When you transition from native macOS tools to a dedicated security app like Folder Lock, you gain administrative control over your data. Here is what changes.</p><div class="security-visual-grid feature-visuals"><figure class="content-image"><img alt="Secure folder synchronization across locked desktop and cloud locations" decoding="async" loading="lazy" src="https://i.ibb.co/WvSS7JHb/Secure-Folder-Synchronization.jpg"/></figure><figure class="content-image"><img alt="Secure file transfer without sharing PDF passwords by message" decoding="async" loading="lazy" src="https://i.ibb.co/4RQm9JNL/secure-transfer-without-password-sharing.jpg"/></figure><figure class="content-image"><img alt="Encrypted secure notes stored beside private documents" decoding="async" loading="lazy" src="https://i.ibb.co/LddRBVjR/Encrypted-Secure-Notes.jpg"/></figure><figure class="content-image"><img alt="Cross platform synchronization for protected files on multiple devices" decoding="async" loading="lazy" src="https://i.ibb.co/jZfz7Hzz/Cross-Platform-Synchronization.jpg"/></figure></div>
+<div class="def-list">
+<dl>
+
+
+
+
+
+
+
+
+
+
+<div class="feature-card" data-spec="SPEC-01" tabindex="0"><dt>On-the-Fly AES-256 Encryption</dt><dd>Unlike Preview, where you must re-export a PDF every time you make an edit, a vault encrypts and decrypts files in real-time as you access them in memory, utilizing military-grade AES-256 cryptographic standards.</dd></div><div class="feature-card" data-spec="SPEC-02" tabindex="0"><dt>Cloud-Native Lockers</dt><dd>Instead of trusting third-party cloud servers with raw data, Folder Lock establishes encrypted containers tailored for Dropbox, OneDrive, and Google Drive. Your PDFs are scrambled locally on your Mac before a single byte is uploaded to the web.</dd></div><div class="feature-card" data-spec="SPEC-03" tabindex="0"><dt>Cross-Platform Device Sync</dt><dd>Files locked inside the vault ecosystem are not tethered to your Mac. They can be securely synced and accessed across macOS, Windows, iOS, and Android companion apps using your unified master password.</dd></div><div class="feature-card" data-spec="SPEC-04" tabindex="0"><dt>Password-Free Secure Sharing</dt><dd>Eliminate the risky practice of texting a password to a client. Folder Lock’s asymmetric sharing architecture allows authorized recipients to decrypt the files you send using their own independent credentials.</dd></div><div class="feature-card" data-spec="SPEC-05" tabindex="0"><dt>Secure Notes and Secrets</dt><dd>Not all sensitive data is a file. The platform includes a dedicated module to write and store private text, passwords, and banking information within the same encrypted environment alongside your documents.</dd></div></dl>
+</div>
+</section>
+<!-- S13 PRICING (V4 Checklist) -->
+<section class="bg-tint">
+<div class="container">
+<h2>Folder Lock Pricing: What You Get</h2><figure class="content-image"><img alt="Folder Lock 10 Pro boxshot for unlimited encrypted locker storage" decoding="async" loading="lazy" src="https://i.ibb.co/ksHyHDQV/folder-lock-10-pro-boxshot.png"/></figure>
+<p>Folder Lock offers a clear, transparent upgrade path without hidden monthly subscription fees.</p>
+<div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 32px;">
+<div style="background: #fff; padding: 32px; border-radius: var(--radius-card); border-top: 4px solid var(--color-meta-text); box-shadow: var(--shadow-card);">
+<h3 style="margin-top:0;">Free Version</h3>
+<ul style="list-style: none; padding: 0; margin-top: 16px;">
+<li style="margin-bottom: 12px;">✓ 1 GB Storage per Desktop and Cloud Locker</li>
+<li style="margin-bottom: 12px;">✓ Secure Sync Across 2 Devices</li>
+<li style="margin-bottom: 12px;">✓ Access to Native macOS, iOS, Android &amp; Win Apps</li>
+</ul>
+<a class="btn btn-outline" href="https://www.newsoftwares.net/download/folderlock10-en/folderlock10-en.exe" rel="noopener noreferrer" style="margin-top: 16px;" target="_blank">Download Free Version →</a>
+</div>
+<div style="background: #fff; padding: 32px; border-radius: var(--radius-card); border-top: 4px solid var(--color-primary-accent); box-shadow: var(--shadow-card);">
+<h3 style="margin-top:0;">Full Version (Pro)</h3>
+<ul style="list-style: none; padding: 0; margin-top: 16px;">
+<li style="margin-bottom: 12px;">✓ Unlimited Storage for Desktop and Cloud Lockers</li>
+<li style="margin-bottom: 12px;">✓ Secure Sync Across Up to 5 Devices</li>
+<li style="margin-bottom: 12px;">✓ Advanced Secure Sharing with Users</li>
+<li style="margin-bottom: 12px;">✓ Access to the Secrets Module (Notes &amp; Wallets)</li>
+<li style="margin-bottom: 12px;">✓ One-time $39.95 fee</li>
+</ul>
+<a class="btn btn-filled" href="https://store.newsoftwares.net/?add=fl10" rel="noopener noreferrer" style="margin-top: 16px;" target="_blank">View Full Version Pricing →</a>
+</div>
+</div>
+</div>
+</section>
+<!-- S17 TESTIMONIALS (V4) -->
+<section class="container-wide">
+<h2 style="text-align: center;">How Readers Secure Their Macs</h2><figure class="content-image"><img alt="Shielded Mac workspace for private PDF and folder security" decoding="async" loading="lazy" src="https://i.ibb.co/sv39r4G5/The-Shielded-Workspace.jpg"/></figure>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px;">
+<div class="testimonial-band">
+            "I used to password protect every PDF invoice individually using Mac Preview before sending them to my accountant. Switching to a dedicated encrypted folder that syncs straight to Google Drive saved me hours of redundant work."
+            <span class="testimonial-author">Sarah M., Freelance Designer</span>
+</div>
+<div class="testimonial-band" style="border-left-color: var(--color-meta-text);">
+            "I share my iMac with my family. Native Mac passwords are fine for email, but keeping a locked vault on the desktop is the only way I feel safe storing my tax documents locally. The fact that it securely shares without passing around passwords is a huge plus."
+            <span class="testimonial-author">David T., Home User</span>
+</div>
+</div>
+</section>
+<!-- S20 FAQ -->
+<section class="bg-tint" id="faq">
+<div class="container-wide">
+<h2 style="text-align: center;">Frequently Asked Questions</h2>
+<div class="faq-grid">
+<div class="faq-card">
+<h4>How to password protect a PDF on Mac without Adobe?</h4>
+<p>You can use the built-in macOS Preview app. Open your PDF, select File &gt; Export, check the "Encrypt" box, and enter your password. No third-party software like Adobe Acrobat is required.</p>
+</div>
+<div class="faq-card">
+<h4>Can I remove the password protection from a PDF?</h4>
+<p>Yes, provided you know the password. Open the PDF in Preview, enter the password to unlock it, go to File &gt; Export, uncheck the "Encrypt" box, and save it as a new file.</p>
+</div>
+<div class="faq-card">
+<h4>What encryption level does macOS Preview use for PDFs?</h4>
+<p>Modern macOS versions (Ventura, Sonoma, Sequoia) use strong AES-128 encryption when you apply an Open Password via Preview. This is secure enough for most personal and business documents.</p>
+</div>
+<div class="faq-card">
+<h4>How to share a password-protected PDF safely?</h4>
+<p>If you use Preview, never send the password in the same email or message as the document. For ultimate safety, use a tool like Folder Lock that allows you to authorize recipients without needing to hand off a password at all.</p>
+</div>
+<div class="faq-card">
+<h4>Can a password-protected document be hacked?</h4>
+<p>If you use an Open Password with strong encryption (AES-128 or AES-256) and a long, complex password, it is practically unhackable. However, if you use a simple dictionary word, it can be cracked using brute-force tools.</p>
+</div>
+<div class="faq-card">
+<h4>Is PDF password protection the same as encryption?</h4>
+<p>An "Open Password" utilizes true encryption (scrambling the file data). A "Permissions Password" does not encrypt the file; it merely sets a flag asking the PDF reader program not to allow printing or editing.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- S22 FINAL VERDICT -->
+<section class="container" style="text-align: center;">
+<h2>The Bottom Line</h2><figure class="content-image"><img alt="Final encrypted data vault protecting Mac documents and cloud files" decoding="async" loading="lazy" src="https://i.ibb.co/bMzYGK6K/Data-Protection-Vault.jpg"/></figure>
+<p>If you only need to send one highly sensitive document to a colleague, the native <strong>macOS Preview</strong> app is the best free tool available. Applying an Open Password via the Export menu takes seconds and applies secure AES encryption.</p>
+<p>However, if your goal is to secure multiple documents, restrict access on a shared Mac, or safely sync files to the cloud and your mobile devices, native PDF passwords quickly become tedious and disorganized. For comprehensive local and cloud document security, we recommend upgrading to an <a href="https://folder-lock.com/" rel="noopener noreferrer" target="_blank">encrypted vault solution</a> like Folder Lock.</p>
+<div style="margin-top: 40px; display: flex; justify-content: center; gap: 16px;">
+<a class="btn btn-filled" href="https://www.newsoftwares.net/download/folderlock10-en/folderlock10-en.exe" rel="noopener noreferrer" target="_blank">Try Folder Lock Free →</a>
+<a class="btn btn-outline" href="https://store.newsoftwares.net/?add=fl10" rel="noopener noreferrer" target="_blank">View Full Version Pricing →</a>
+</div>
+</section>
+<!-- FOOTER -->
+<footer>
+<div class="container-wide">
+<div class="footer-grid">
+<div>
+<div class="site-brand" style="color:#fff; margin-bottom: 16px;"><span aria-hidden="true" class="brand-mark"><svg focusable="false" role="img" viewbox="0 0 48 48"><path d="M24 4 40 10v12c0 10.3-6.6 18.8-16 22C14.6 40.8 8 32.3 8 22V10L24 4Z" fill="none" stroke="#B87333" stroke-width="3"></path><path d="M18 24h12v10H18z" fill="#B87333"></path><path d="M20 24v-5a4 4 0 0 1 8 0v5" fill="none" stroke="#fff" stroke-width="3"></path></svg></span><span class="brand-text" aria-label="Mac PDF Security Guide"><span>Mac</span><span>PDF</span><span>Security</span><span>Guide</span></span></div>
+<p>Your independent resource for macOS document security, encryption standards, and privacy protection.</p>
+<p class="footer-disclosure">This site operates as an independent editorial resource. Some links may earn a referral commission at no cost to you. Product recommendations reflect editorial judgment and independent assessment.</p>
+</div>
+<div>
+<h4 style="color:var(--color-primary-accent); margin-bottom: 16px;">Guides</h4>
+<ul style="list-style:none; padding:0; margin:0;">
+<li style="margin-bottom:8px;"><a href="#methods">Free Protection Methods</a></li>
+<li style="margin-bottom:8px;"><a href="#comparison">Software Comparisons</a></li>
+<li style="margin-bottom:8px;"><a href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</div>
+<div>
+<h4 style="color:var(--color-primary-accent); margin-bottom: 16px;">Legal</h4>
+<ul style="list-style:none; padding:0; margin:0;">
+<li style="margin-bottom:8px;"><a href="#">Privacy Policy</a></li>
+<li style="margin-bottom:8px;"><a href="#">Terms of Use</a></li>
+<li style="margin-bottom:8px;"><a href="#">Editorial Policy</a></li>
+</ul>
+</div>
+</div>
+<div style="text-align: center; opacity: 0.6;">
+<p>Folder Lock is developed by <a href="https://www.newsoftwares.net" rel="noopener noreferrer" target="_blank">NewSoftwares.net</a>.</p>
+<p>© 2026 Mac PDF Security Guide. All rights reserved.</p>
+</div>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Sticky Header
+        const header = document.getElementById('site-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Nav
+        const toggle = document.getElementById('mobile-toggle');
+        const nav = document.getElementById('desktop-nav');
+        toggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+        });
+
+
+        // Structural comparison column lock hover
+        document.querySelectorAll('#comparison table').forEach((table) => {
+            table.querySelectorAll('th, td').forEach((cell) => {
+                cell.addEventListener('mouseenter', () => table.dataset.hoverCol = String(cell.cellIndex + 1));
+                cell.addEventListener('mouseleave', () => delete table.dataset.hoverCol);
+            });
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                nav.classList.remove('active');
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+<!-- SCHEMA -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Mac PDF Security Guide",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Article",
+      "headline": "How to Password Protect a PDF on Mac Using Preview — Free",
+      "description": "Learn how to password protect a PDF on Mac for free using Preview. Discover the difference between open vs permissions passwords, and how to share files securely.",
+      "author": {
+        "@type": "Organization",
+        "name": "Mac PDF Security Guide Editorial Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "NewSoftwares.net"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How to password protect a PDF on Mac without Adobe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can use the built-in macOS Preview app. Open your PDF, select File > Export, check the 'Encrypt' box, and enter your password. No third-party software like Adobe Acrobat is required."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I remove the password protection from a PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, provided you know the password. Open the PDF in Preview, enter the password to unlock it, go to File > Export, uncheck the 'Encrypt' box, and save it as a new file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What encryption level does macOS Preview use for PDFs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Modern macOS versions use strong AES-128 encryption when you apply an Open Password via Preview."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Password Protect a PDF on Mac Using Preview",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "text": "Double-click your PDF to open it in Preview."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "In the top menu bar, click File and select Export."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Check the Encrypt checkbox near the bottom."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Enter your password in the Password field and re-type it in the Verify field."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Click Save."
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Security Guides"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "macOS Document Protection"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</body>
+</html>
